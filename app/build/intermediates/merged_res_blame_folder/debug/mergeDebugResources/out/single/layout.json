@@ -1,0 +1,34 @@
+[
+    {
+        "merged": "C:\\Users\\nasih\\.gradle\\daemon\\8.7\\com.example.scanner.app-mergeDebugResources-45:\\layout\\item_document.xml",
+        "source": "C:\\Users\\nasih\\.gradle\\daemon\\8.7\\com.example.scanner.app-main-48:\\layout\\item_document.xml"
+    },
+    {
+        "merged": "C:\\Users\\nasih\\.gradle\\daemon\\8.7\\com.example.scanner.app-mergeDebugResources-45:\\layout\\activity_crop.xml",
+        "source": "C:\\Users\\nasih\\.gradle\\daemon\\8.7\\com.example.scanner.app-main-48:\\layout\\activity_crop.xml"
+    },
+    {
+        "merged": "com.example.scanner.app-mergeDebugResources-45:/layout/item_image_preview.xml",
+        "source": "com.example.scanner.app-main-48:/layout/item_image_preview.xml"
+    },
+    {
+        "merged": "com.example.scanner.app-mergeDebugResources-45:/layout/activity_crop.xml",
+        "source": "com.example.scanner.app-main-48:/layout/activity_crop.xml"
+    },
+    {
+        "merged": "C:\\Users\\nasih\\.gradle\\daemon\\8.7\\com.example.scanner.app-mergeDebugResources-45:\\layout\\activity_main.xml",
+        "source": "C:\\Users\\nasih\\.gradle\\daemon\\8.7\\com.example.scanner.app-main-48:\\layout\\activity_main.xml"
+    },
+    {
+        "merged": "com.example.scanner.app-mergeDebugResources-45:/layout/activity_image_preview.xml",
+        "source": "com.example.scanner.app-main-48:/layout/activity_image_preview.xml"
+    },
+    {
+        "merged": "C:\\Users\\nasih\\.gradle\\daemon\\8.7\\com.example.scanner.app-mergeDebugResources-45:\\layout\\activity_editor.xml",
+        "source": "C:\\Users\\nasih\\.gradle\\daemon\\8.7\\com.example.scanner.app-main-48:\\layout\\activity_editor.xml"
+    },
+    {
+        "merged": "C:\\Users\\nasih\\.gradle\\daemon\\8.7\\com.example.scanner.app-mergeDebugResources-45:\\layout\\activity_scan.xml",
+        "source": "C:\\Users\\nasih\\.gradle\\daemon\\8.7\\com.example.scanner.app-main-48:\\layout\\activity_scan.xml"
+    }
+]

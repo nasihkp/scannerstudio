@@ -1,0 +1,62 @@
+[
+    {
+        "merged": "C:\\Users\\nasih\\.gradle\\daemon\\8.7\\com.example.scanner.app-debug-46:\\layout_activity_crop.xml.flat",
+        "source": "C:\\Users\\nasih\\.gradle\\daemon\\8.7\\com.example.scanner.app-main-48:\\layout\\activity_crop.xml"
+    },
+    {
+        "merged": "C:\\Users\\nasih\\.gradle\\daemon\\8.7\\com.example.scanner.app-debug-46:\\layout_activity_scan.xml.flat",
+        "source": "C:\\Users\\nasih\\.gradle\\daemon\\8.7\\com.example.scanner.app-main-48:\\layout\\activity_scan.xml"
+    },
+    {
+        "merged": "C:\\Users\\nasih\\.gradle\\daemon\\8.7\\com.example.scanner.app-debug-46:\\xml_backup_rules.xml.flat",
+        "source": "C:\\Users\\nasih\\.gradle\\daemon\\8.7\\com.example.scanner.app-main-48:\\xml\\backup_rules.xml"
+    },
+    {
+        "merged": "com.example.scanner.app-debug-46:/layout_activity_crop.xml.flat",
+        "source": "com.example.scanner.app-main-48:/layout/activity_crop.xml"
+    },
+    {
+        "merged": "com.example.scanner.app-debug-46:/layout_activity_image_preview.xml.flat",
+        "source": "com.example.scanner.app-main-48:/layout/activity_image_preview.xml"
+    },
+    {
+        "merged": "C:\\Users\\nasih\\.gradle\\daemon\\8.7\\com.example.scanner.app-debug-46:\\menu_document_menu.xml.flat",
+        "source": "C:\\Users\\nasih\\.gradle\\daemon\\8.7\\com.example.scanner.app-main-48:\\menu\\document_menu.xml"
+    },
+    {
+        "merged": "C:\\Users\\nasih\\.gradle\\daemon\\8.7\\com.example.scanner.app-debug-46:\\layout_activity_main.xml.flat",
+        "source": "C:\\Users\\nasih\\.gradle\\daemon\\8.7\\com.example.scanner.app-main-48:\\layout\\activity_main.xml"
+    },
+    {
+        "merged": "C:\\Users\\nasih\\.gradle\\daemon\\8.7\\com.example.scanner.app-debug-46:\\drawable_ic_launcher_foreground.xml.flat",
+        "source": "C:\\Users\\nasih\\.gradle\\daemon\\8.7\\com.example.scanner.app-main-48:\\drawable\\ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "C:\\Users\\nasih\\.gradle\\daemon\\8.7\\com.example.scanner.app-debug-46:\\xml_data_extraction_rules.xml.flat",
+        "source": "C:\\Users\\nasih\\.gradle\\daemon\\8.7\\com.example.scanner.app-main-48:\\xml\\data_extraction_rules.xml"
+    },
+    {
+        "merged": "com.example.scanner.app-debug-46:/layout_item_image_preview.xml.flat",
+        "source": "com.example.scanner.app-main-48:/layout/item_image_preview.xml"
+    },
+    {
+        "merged": "C:\\Users\\nasih\\.gradle\\daemon\\8.7\\com.example.scanner.app-debug-46:\\xml_file_paths.xml.flat",
+        "source": "C:\\Users\\nasih\\.gradle\\daemon\\8.7\\com.example.scanner.app-main-48:\\xml\\file_paths.xml"
+    },
+    {
+        "merged": "C:\\Users\\nasih\\.gradle\\daemon\\8.7\\com.example.scanner.app-debug-46:\\layout_activity_editor.xml.flat",
+        "source": "C:\\Users\\nasih\\.gradle\\daemon\\8.7\\com.example.scanner.app-main-48:\\layout\\activity_editor.xml"
+    },
+    {
+        "merged": "C:\\Users\\nasih\\.gradle\\daemon\\8.7\\com.example.scanner.app-debug-46:\\mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "C:\\Users\\nasih\\.gradle\\daemon\\8.7\\com.example.scanner.app-main-48:\\mipmap-anydpi-v26\\ic_launcher.xml"
+    },
+    {
+        "merged": "C:\\Users\\nasih\\.gradle\\daemon\\8.7\\com.example.scanner.app-debug-46:\\mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "C:\\Users\\nasih\\.gradle\\daemon\\8.7\\com.example.scanner.app-main-48:\\mipmap-anydpi-v26\\ic_launcher_round.xml"
+    },
+    {
+        "merged": "C:\\Users\\nasih\\.gradle\\daemon\\8.7\\com.example.scanner.app-debug-46:\\layout_item_document.xml.flat",
+        "source": "C:\\Users\\nasih\\.gradle\\daemon\\8.7\\com.example.scanner.app-main-48:\\layout\\item_document.xml"
+    }
+]

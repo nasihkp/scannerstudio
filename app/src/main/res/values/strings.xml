@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Scanner</string>
+    <string name="title_my_documents">My Documents</string>
+    <string name="action_scan">Scan Document</string>
+    <string name="permission_camera_rationale">Camera permission is required to scan documents.</string>
+    <string name="capture">Capture</string>
+    <string name="save">Save</string>
+    <string name="retake">Retake</string>
+</resources>

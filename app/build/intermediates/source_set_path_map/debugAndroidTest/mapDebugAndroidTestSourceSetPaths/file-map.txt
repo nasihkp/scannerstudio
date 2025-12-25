@@ -1,0 +1,4 @@
+com.example.scanner.test.app-androidTest-0 C:\Users\nasih\scanner\app\build\generated\res\resValues\androidTest\debug
+com.example.scanner.test.app-mergeDebugAndroidTestResources-1 C:\Users\nasih\scanner\app\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\merged.dir
+com.example.scanner.test.app-mergeDebugAndroidTestResources-2 C:\Users\nasih\scanner\app\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\stripped.dir
+com.example.scanner.test.app-debugAndroidTest-3 C:\Users\nasih\scanner\app\build\intermediates\merged_res\debugAndroidTest\mergeDebugAndroidTestResources
