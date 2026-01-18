@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "com.example.scanner.app-mergeDebugResources-44:/values-v16/values-v16.xml",
+            "outputFile": "com.example.scanner.app-mergeDebugResources-48:/values-v16/values-v16.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\nasih\\.gradle\\caches\\transforms-4\\1d36c4522de4507f17c6bd42c9a49aef\\transformed\\appcompat-1.6.1\\res\\values-v16\\values-v16.xml",
+                    "source": "C:\\Users\\nasih\\.gradle\\caches\\transforms-4\\094913561da98edb116a67e38a805772\\transformed\\appcompat-1.6.1\\res\\values-v16\\values-v16.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",
@@ -23,7 +23,7 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\nasih\\.gradle\\caches\\transforms-4\\1d3a815cbce32dfced84eb51254adddc\\transformed\\core-1.12.0\\res\\values-v16\\values-v16.xml",
+                    "source": "C:\\Users\\nasih\\.gradle\\caches\\transforms-4\\272d5e2baee3e55cb85c90cc95faffc8\\transformed\\core-1.12.0\\res\\values-v16\\values-v16.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",

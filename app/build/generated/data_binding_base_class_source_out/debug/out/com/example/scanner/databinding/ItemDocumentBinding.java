@@ -13,16 +13,23 @@ import androidx.cardview.widget.CardView;
 import androidx.viewbinding.ViewBinding;
 import androidx.viewbinding.ViewBindings;
 import com.example.scanner.R;
+import com.google.android.material.card.MaterialCardView;
 import java.lang.NullPointerException;
 import java.lang.Override;
 import java.lang.String;
 
 public final class ItemDocumentBinding implements ViewBinding {
   @NonNull
-  private final CardView rootView;
+  private final MaterialCardView rootView;
 
   @NonNull
-  public final ImageButton btnMenu;
+  public final ImageButton btnDelete;
+
+  @NonNull
+  public final CardView cvThumb;
+
+  @NonNull
+  public final ImageView ivPdfIcon;
 
   @NonNull
   public final ImageView ivThumbnail;
@@ -33,10 +40,13 @@ public final class ItemDocumentBinding implements ViewBinding {
   @NonNull
   public final TextView tvName;
 
-  private ItemDocumentBinding(@NonNull CardView rootView, @NonNull ImageButton btnMenu,
-      @NonNull ImageView ivThumbnail, @NonNull TextView tvDate, @NonNull TextView tvName) {
+  private ItemDocumentBinding(@NonNull MaterialCardView rootView, @NonNull ImageButton btnDelete,
+      @NonNull CardView cvThumb, @NonNull ImageView ivPdfIcon, @NonNull ImageView ivThumbnail,
+      @NonNull TextView tvDate, @NonNull TextView tvName) {
     this.rootView = rootView;
-    this.btnMenu = btnMenu;
+    this.btnDelete = btnDelete;
+    this.cvThumb = cvThumb;
+    this.ivPdfIcon = ivPdfIcon;
     this.ivThumbnail = ivThumbnail;
     this.tvDate = tvDate;
     this.tvName = tvName;
@@ -44,7 +54,7 @@ public final class ItemDocumentBinding implements ViewBinding {
 
   @Override
   @NonNull
-  public CardView getRoot() {
+  public MaterialCardView getRoot() {
     return rootView;
   }
 
@@ -69,9 +79,21 @@ public final class ItemDocumentBinding implements ViewBinding {
     // This is done to optimize the compiled bytecode for size and performance.
     int id;
     missingId: {
-      id = R.id.btnMenu;
-      ImageButton btnMenu = ViewBindings.findChildViewById(rootView, id);
-      if (btnMenu == null) {
+      id = R.id.btnDelete;
+      ImageButton btnDelete = ViewBindings.findChildViewById(rootView, id);
+      if (btnDelete == null) {
+        break missingId;
+      }
+
+      id = R.id.cvThumb;
+      CardView cvThumb = ViewBindings.findChildViewById(rootView, id);
+      if (cvThumb == null) {
+        break missingId;
+      }
+
+      id = R.id.ivPdfIcon;
+      ImageView ivPdfIcon = ViewBindings.findChildViewById(rootView, id);
+      if (ivPdfIcon == null) {
         break missingId;
       }
 
@@ -93,7 +115,8 @@ public final class ItemDocumentBinding implements ViewBinding {
         break missingId;
       }
 
-      return new ItemDocumentBinding((CardView) rootView, btnMenu, ivThumbnail, tvDate, tvName);
+      return new ItemDocumentBinding((MaterialCardView) rootView, btnDelete, cvThumb, ivPdfIcon,
+          ivThumbnail, tvDate, tvName);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

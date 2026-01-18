@@ -5,13 +5,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.camera.view.PreviewView;
+import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.viewbinding.ViewBinding;
 import androidx.viewbinding.ViewBindings;
 import com.example.scanner.R;
+import com.example.scanner.ui.scan.EdgeOverlayView;
 import java.lang.NullPointerException;
 import java.lang.Override;
 import java.lang.String;
@@ -24,12 +29,46 @@ public final class ActivityScanBinding implements ViewBinding {
   public final ImageButton btnCapture;
 
   @NonNull
+  public final ImageButton btnClose;
+
+  @NonNull
+  public final ImageButton btnFlash;
+
+  @NonNull
+  public final ImageView btnGallery;
+
+  @NonNull
+  public final CardView cvDone;
+
+  @NonNull
+  public final EdgeOverlayView edgeOverlay;
+
+  @NonNull
+  public final LinearLayout topBar;
+
+  @NonNull
+  public final TextView tvAuto;
+
+  @NonNull
+  public final TextView tvCount;
+
+  @NonNull
   public final PreviewView viewFinder;
 
   private ActivityScanBinding(@NonNull ConstraintLayout rootView, @NonNull ImageButton btnCapture,
-      @NonNull PreviewView viewFinder) {
+      @NonNull ImageButton btnClose, @NonNull ImageButton btnFlash, @NonNull ImageView btnGallery,
+      @NonNull CardView cvDone, @NonNull EdgeOverlayView edgeOverlay, @NonNull LinearLayout topBar,
+      @NonNull TextView tvAuto, @NonNull TextView tvCount, @NonNull PreviewView viewFinder) {
     this.rootView = rootView;
     this.btnCapture = btnCapture;
+    this.btnClose = btnClose;
+    this.btnFlash = btnFlash;
+    this.btnGallery = btnGallery;
+    this.cvDone = cvDone;
+    this.edgeOverlay = edgeOverlay;
+    this.topBar = topBar;
+    this.tvAuto = tvAuto;
+    this.tvCount = tvCount;
     this.viewFinder = viewFinder;
   }
 
@@ -66,13 +105,62 @@ public final class ActivityScanBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.btnClose;
+      ImageButton btnClose = ViewBindings.findChildViewById(rootView, id);
+      if (btnClose == null) {
+        break missingId;
+      }
+
+      id = R.id.btnFlash;
+      ImageButton btnFlash = ViewBindings.findChildViewById(rootView, id);
+      if (btnFlash == null) {
+        break missingId;
+      }
+
+      id = R.id.btnGallery;
+      ImageView btnGallery = ViewBindings.findChildViewById(rootView, id);
+      if (btnGallery == null) {
+        break missingId;
+      }
+
+      id = R.id.cvDone;
+      CardView cvDone = ViewBindings.findChildViewById(rootView, id);
+      if (cvDone == null) {
+        break missingId;
+      }
+
+      id = R.id.edgeOverlay;
+      EdgeOverlayView edgeOverlay = ViewBindings.findChildViewById(rootView, id);
+      if (edgeOverlay == null) {
+        break missingId;
+      }
+
+      id = R.id.topBar;
+      LinearLayout topBar = ViewBindings.findChildViewById(rootView, id);
+      if (topBar == null) {
+        break missingId;
+      }
+
+      id = R.id.tvAuto;
+      TextView tvAuto = ViewBindings.findChildViewById(rootView, id);
+      if (tvAuto == null) {
+        break missingId;
+      }
+
+      id = R.id.tvCount;
+      TextView tvCount = ViewBindings.findChildViewById(rootView, id);
+      if (tvCount == null) {
+        break missingId;
+      }
+
       id = R.id.viewFinder;
       PreviewView viewFinder = ViewBindings.findChildViewById(rootView, id);
       if (viewFinder == null) {
         break missingId;
       }
 
-      return new ActivityScanBinding((ConstraintLayout) rootView, btnCapture, viewFinder);
+      return new ActivityScanBinding((ConstraintLayout) rootView, btnCapture, btnClose, btnFlash,
+          btnGallery, cvDone, edgeOverlay, topBar, tvAuto, tvCount, viewFinder);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

@@ -16,154 +16,118 @@ class CropView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
-    private val cropRect = RectF()
+    private val cropPoints = Array(4) { android.graphics.PointF() }
     private val paint = Paint().apply {
         color = Color.WHITE
         style = Paint.Style.STROKE
-        strokeWidth = 4f
+        strokeWidth = 5f
+        isAntiAlias = true
+    }
+    private val cornerPaint = Paint().apply {
+        color = Color.WHITE
+        style = Paint.Style.FILL
+        isAntiAlias = true
     }
     private val overlayPaint = Paint().apply {
         color = Color.parseColor("#80000000") // Semi-transparent black
         style = Paint.Style.FILL
     }
-    private val handlePaint = Paint().apply {
-        color = Color.WHITE
-        style = Paint.Style.FILL
-    }
-
-    private val handleRadius = 30f
-    private var activeHandle: Handle? = null
-    private var lastX = 0f
-    private var lastY = 0f
-
-    enum class Handle {
-        TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT, CENTER
-    }
-
+    
+    private val handleRadius = 40f
+    private val touchTolerance = 60f
+    private var activeHandleIndex = -1 // 0: TL, 1: TR, 2: BR, 3: BL
+    
+    private var bitmapRect = RectF()
+    
     init {
-        // Initialize crop rect to 80% of view size (will be adjusted in onSizeChanged)
-        post {
-            val margin = width * 0.1f
-            cropRect.set(margin, margin, width - margin, height - margin)
-            invalidate()
-        }
+        // Initialize points will happen in onSizeChanged or when image is set
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
-        // Initialize crop rect if not set
-        if (cropRect.isEmpty) {
-            val margin = w * 0.1f
-            cropRect.set(margin, margin, w - margin, h - margin)
+        if (cropPoints[0].x == 0f && cropPoints[0].y == 0f) {
+            resetPoints()
+        }
+    }
+    
+    fun setImageEvent(imageRect: RectF?) {
+        if (imageRect != null) {
+            bitmapRect.set(imageRect)
+            resetPoints()
+            invalidate()
+        }
+    }
+    
+    fun resetPoints() {
+        if (bitmapRect.isEmpty) {
+            val margin = width * 0.1f
+            cropPoints[0].set(margin, margin) // TL
+            cropPoints[1].set(width - margin, margin) // TR
+            cropPoints[2].set(width - margin, height - margin) // BR
+            cropPoints[3].set(margin, height - margin) // BL
+        } else {
+            val margin = 20f
+            cropPoints[0].set(bitmapRect.left + margin, bitmapRect.top + margin)
+            cropPoints[1].set(bitmapRect.right - margin, bitmapRect.top + margin)
+            cropPoints[2].set(bitmapRect.right - margin, bitmapRect.bottom - margin)
+            cropPoints[3].set(bitmapRect.left + margin, bitmapRect.bottom - margin)
         }
     }
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
-        // Draw overlay (dimmed area outside crop rect)
-        canvas.drawRect(0f, 0f, width.toFloat(), cropRect.top, overlayPaint)
-        canvas.drawRect(0f, cropRect.top, cropRect.left, cropRect.bottom, overlayPaint)
-        canvas.drawRect(cropRect.right, cropRect.top, width.toFloat(), cropRect.bottom, overlayPaint)
-        canvas.drawRect(0f, cropRect.bottom, width.toFloat(), height.toFloat(), overlayPaint)
-
-        // Draw crop rectangle
-        canvas.drawRect(cropRect, paint)
+        // Draw overlay (simplified for 4-point: just darken everything and clip out the path?)
+        // For proper "inverse" path clipping on older Android versions, we might need a different approach.
+        // A simpler visual trick is to draw the polygon with a clear porter-duff mode on a dark layer,
+        // but here we'll just draw the lines and handles for simplicity as "darkening outside" a non-rect is complex.
+        
+        // Draw connecting lines
+        for (i in 0 until 4) {
+             val start = cropPoints[i]
+             val end = cropPoints[(i + 1) % 4]
+             canvas.drawLine(start.x, start.y, end.x, end.y, paint)
+        }
 
         // Draw corner handles
-        canvas.drawCircle(cropRect.left, cropRect.top, handleRadius, handlePaint)
-        canvas.drawCircle(cropRect.right, cropRect.top, handleRadius, handlePaint)
-        canvas.drawCircle(cropRect.left, cropRect.bottom, handleRadius, handlePaint)
-        canvas.drawCircle(cropRect.right, cropRect.bottom, handleRadius, handlePaint)
+        for (point in cropPoints) {
+            canvas.drawCircle(point.x, point.y, handleRadius, cornerPaint)
+        }
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
-                lastX = event.x
-                lastY = event.y
-                activeHandle = getHandleAt(event.x, event.y)
+                activeHandleIndex = getHandleIndex(event.x, event.y)
                 return true
             }
             MotionEvent.ACTION_MOVE -> {
-                val dx = event.x - lastX
-                val dy = event.y - lastY
-
-                when (activeHandle) {
-                    Handle.TOP_LEFT -> {
-                        cropRect.left = (cropRect.left + dx).coerceIn(0f, cropRect.right - 100f)
-                        cropRect.top = (cropRect.top + dy).coerceIn(0f, cropRect.bottom - 100f)
-                    }
-                    Handle.TOP_RIGHT -> {
-                        cropRect.right = (cropRect.right + dx).coerceIn(cropRect.left + 100f, width.toFloat())
-                        cropRect.top = (cropRect.top + dy).coerceIn(0f, cropRect.bottom - 100f)
-                    }
-                    Handle.BOTTOM_LEFT -> {
-                        cropRect.left = (cropRect.left + dx).coerceIn(0f, cropRect.right - 100f)
-                        cropRect.bottom = (cropRect.bottom + dy).coerceIn(cropRect.top + 100f, height.toFloat())
-                    }
-                    Handle.BOTTOM_RIGHT -> {
-                        cropRect.right = (cropRect.right + dx).coerceIn(cropRect.left + 100f, width.toFloat())
-                        cropRect.bottom = (cropRect.bottom + dy).coerceIn(cropRect.top + 100f, height.toFloat())
-                    }
-                    Handle.CENTER -> {
-                        val newLeft = cropRect.left + dx
-                        val newRight = cropRect.right + dx
-                        val newTop = cropRect.top + dy
-                        val newBottom = cropRect.bottom + dy
-
-                        if (newLeft >= 0 && newRight <= width) {
-                            cropRect.left = newLeft
-                            cropRect.right = newRight
-                        }
-                        if (newTop >= 0 && newBottom <= height) {
-                            cropRect.top = newTop
-                            cropRect.bottom = newBottom
-                        }
-                    }
-                    else -> return false
+                if (activeHandleIndex != -1) {
+                    // constrain movement close to bounds if needed, for now free movement
+                    cropPoints[activeHandleIndex].set(event.x, event.y)
+                    invalidate()
+                    return true
                 }
-
-                lastX = event.x
-                lastY = event.y
-                invalidate()
-                return true
             }
             MotionEvent.ACTION_UP -> {
-                activeHandle = null
+                activeHandleIndex = -1
                 return true
             }
         }
         return super.onTouchEvent(event)
     }
 
-    private fun getHandleAt(x: Float, y: Float): Handle? {
-        // Check corner handles first
-        if (abs(x - cropRect.left) < handleRadius * 2 && abs(y - cropRect.top) < handleRadius * 2) {
-            return Handle.TOP_LEFT
+    private fun getHandleIndex(x: Float, y: Float): Int {
+        for (i in cropPoints.indices) {
+            val p = cropPoints[i]
+            if (abs(x - p.x) < touchTolerance && abs(y - p.y) < touchTolerance) {
+                return i
+            }
         }
-        if (abs(x - cropRect.right) < handleRadius * 2 && abs(y - cropRect.top) < handleRadius * 2) {
-            return Handle.TOP_RIGHT
-        }
-        if (abs(x - cropRect.left) < handleRadius * 2 && abs(y - cropRect.bottom) < handleRadius * 2) {
-            return Handle.BOTTOM_LEFT
-        }
-        if (abs(x - cropRect.right) < handleRadius * 2 && abs(y - cropRect.bottom) < handleRadius * 2) {
-            return Handle.BOTTOM_RIGHT
-        }
-        // Check if inside rectangle (for moving)
-        if (cropRect.contains(x, y)) {
-            return Handle.CENTER
-        }
-        return null
+        return -1
     }
 
-    fun getCropRect(): RectF {
-        return RectF(cropRect)
-    }
-
-    fun setCropRect(rect: RectF) {
-        cropRect.set(rect)
-        invalidate()
+    fun getCropPoints(): List<android.graphics.PointF> {
+        return cropPoints.toList()
     }
 }

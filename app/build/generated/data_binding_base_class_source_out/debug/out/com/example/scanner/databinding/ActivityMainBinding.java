@@ -4,11 +4,14 @@ package com.example.scanner.databinding;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.cardview.widget.CardView;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewbinding.ViewBinding;
 import androidx.viewbinding.ViewBindings;
@@ -20,10 +23,49 @@ import java.lang.String;
 
 public final class ActivityMainBinding implements ViewBinding {
   @NonNull
-  private final ConstraintLayout rootView;
+  private final CoordinatorLayout rootView;
+
+  @NonNull
+  public final ImageButton btnSettings;
+
+  @NonNull
+  public final TextView chipDriveConnected;
+
+  @NonNull
+  public final CardView cvImport;
+
+  @NonNull
+  public final CardView cvProfileImage;
+
+  @NonNull
+  public final CardView cvScan;
+
+  @NonNull
+  public final CardView cvToolCompress;
+
+  @NonNull
+  public final CardView cvToolMerge;
+
+  @NonNull
+  public final CardView cvToolSecurity;
+
+  @NonNull
+  public final CardView cvUserProfile;
 
   @NonNull
   public final FloatingActionButton fabScan;
+
+  @NonNull
+  public final ImageView ivLockCompress;
+
+  @NonNull
+  public final ImageView ivLockMerge;
+
+  @NonNull
+  public final ImageView ivLockSecurity;
+
+  @NonNull
+  public final ImageView ivProfileImage;
 
   @NonNull
   public final RecyclerView rvDocuments;
@@ -32,21 +74,61 @@ public final class ActivityMainBinding implements ViewBinding {
   public final Toolbar toolbar;
 
   @NonNull
+  public final TextView tvAppTitle;
+
+  @NonNull
   public final TextView tvEmptyState;
 
-  private ActivityMainBinding(@NonNull ConstraintLayout rootView,
-      @NonNull FloatingActionButton fabScan, @NonNull RecyclerView rvDocuments,
-      @NonNull Toolbar toolbar, @NonNull TextView tvEmptyState) {
+  @NonNull
+  public final TextView tvProfileInitials;
+
+  @NonNull
+  public final TextView tvUserEmail;
+
+  @NonNull
+  public final TextView tvUserName;
+
+  @NonNull
+  public final TextView tvViewAll;
+
+  private ActivityMainBinding(@NonNull CoordinatorLayout rootView, @NonNull ImageButton btnSettings,
+      @NonNull TextView chipDriveConnected, @NonNull CardView cvImport,
+      @NonNull CardView cvProfileImage, @NonNull CardView cvScan, @NonNull CardView cvToolCompress,
+      @NonNull CardView cvToolMerge, @NonNull CardView cvToolSecurity,
+      @NonNull CardView cvUserProfile, @NonNull FloatingActionButton fabScan,
+      @NonNull ImageView ivLockCompress, @NonNull ImageView ivLockMerge,
+      @NonNull ImageView ivLockSecurity, @NonNull ImageView ivProfileImage,
+      @NonNull RecyclerView rvDocuments, @NonNull Toolbar toolbar, @NonNull TextView tvAppTitle,
+      @NonNull TextView tvEmptyState, @NonNull TextView tvProfileInitials,
+      @NonNull TextView tvUserEmail, @NonNull TextView tvUserName, @NonNull TextView tvViewAll) {
     this.rootView = rootView;
+    this.btnSettings = btnSettings;
+    this.chipDriveConnected = chipDriveConnected;
+    this.cvImport = cvImport;
+    this.cvProfileImage = cvProfileImage;
+    this.cvScan = cvScan;
+    this.cvToolCompress = cvToolCompress;
+    this.cvToolMerge = cvToolMerge;
+    this.cvToolSecurity = cvToolSecurity;
+    this.cvUserProfile = cvUserProfile;
     this.fabScan = fabScan;
+    this.ivLockCompress = ivLockCompress;
+    this.ivLockMerge = ivLockMerge;
+    this.ivLockSecurity = ivLockSecurity;
+    this.ivProfileImage = ivProfileImage;
     this.rvDocuments = rvDocuments;
     this.toolbar = toolbar;
+    this.tvAppTitle = tvAppTitle;
     this.tvEmptyState = tvEmptyState;
+    this.tvProfileInitials = tvProfileInitials;
+    this.tvUserEmail = tvUserEmail;
+    this.tvUserName = tvUserName;
+    this.tvViewAll = tvViewAll;
   }
 
   @Override
   @NonNull
-  public ConstraintLayout getRoot() {
+  public CoordinatorLayout getRoot() {
     return rootView;
   }
 
@@ -71,9 +153,87 @@ public final class ActivityMainBinding implements ViewBinding {
     // This is done to optimize the compiled bytecode for size and performance.
     int id;
     missingId: {
+      id = R.id.btnSettings;
+      ImageButton btnSettings = ViewBindings.findChildViewById(rootView, id);
+      if (btnSettings == null) {
+        break missingId;
+      }
+
+      id = R.id.chipDriveConnected;
+      TextView chipDriveConnected = ViewBindings.findChildViewById(rootView, id);
+      if (chipDriveConnected == null) {
+        break missingId;
+      }
+
+      id = R.id.cvImport;
+      CardView cvImport = ViewBindings.findChildViewById(rootView, id);
+      if (cvImport == null) {
+        break missingId;
+      }
+
+      id = R.id.cvProfileImage;
+      CardView cvProfileImage = ViewBindings.findChildViewById(rootView, id);
+      if (cvProfileImage == null) {
+        break missingId;
+      }
+
+      id = R.id.cvScan;
+      CardView cvScan = ViewBindings.findChildViewById(rootView, id);
+      if (cvScan == null) {
+        break missingId;
+      }
+
+      id = R.id.cvToolCompress;
+      CardView cvToolCompress = ViewBindings.findChildViewById(rootView, id);
+      if (cvToolCompress == null) {
+        break missingId;
+      }
+
+      id = R.id.cvToolMerge;
+      CardView cvToolMerge = ViewBindings.findChildViewById(rootView, id);
+      if (cvToolMerge == null) {
+        break missingId;
+      }
+
+      id = R.id.cvToolSecurity;
+      CardView cvToolSecurity = ViewBindings.findChildViewById(rootView, id);
+      if (cvToolSecurity == null) {
+        break missingId;
+      }
+
+      id = R.id.cvUserProfile;
+      CardView cvUserProfile = ViewBindings.findChildViewById(rootView, id);
+      if (cvUserProfile == null) {
+        break missingId;
+      }
+
       id = R.id.fabScan;
       FloatingActionButton fabScan = ViewBindings.findChildViewById(rootView, id);
       if (fabScan == null) {
+        break missingId;
+      }
+
+      id = R.id.ivLockCompress;
+      ImageView ivLockCompress = ViewBindings.findChildViewById(rootView, id);
+      if (ivLockCompress == null) {
+        break missingId;
+      }
+
+      id = R.id.ivLockMerge;
+      ImageView ivLockMerge = ViewBindings.findChildViewById(rootView, id);
+      if (ivLockMerge == null) {
+        break missingId;
+      }
+
+      id = R.id.ivLockSecurity;
+      ImageView ivLockSecurity = ViewBindings.findChildViewById(rootView, id);
+      if (ivLockSecurity == null) {
+        break missingId;
+      }
+
+      id = R.id.ivProfileImage;
+      ImageView ivProfileImage = ViewBindings.findChildViewById(rootView, id);
+      if (ivProfileImage == null) {
         break missingId;
       }
 
@@ -89,14 +249,47 @@ public final class ActivityMainBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.tvAppTitle;
+      TextView tvAppTitle = ViewBindings.findChildViewById(rootView, id);
+      if (tvAppTitle == null) {
+        break missingId;
+      }
+
       id = R.id.tvEmptyState;
       TextView tvEmptyState = ViewBindings.findChildViewById(rootView, id);
       if (tvEmptyState == null) {
         break missingId;
       }
 
-      return new ActivityMainBinding((ConstraintLayout) rootView, fabScan, rvDocuments, toolbar,
-          tvEmptyState);
+      id = R.id.tvProfileInitials;
+      TextView tvProfileInitials = ViewBindings.findChildViewById(rootView, id);
+      if (tvProfileInitials == null) {
+        break missingId;
+      }
+
+      id = R.id.tvUserEmail;
+      TextView tvUserEmail = ViewBindings.findChildViewById(rootView, id);
+      if (tvUserEmail == null) {
+        break missingId;
+      }
+
+      id = R.id.tvUserName;
+      TextView tvUserName = ViewBindings.findChildViewById(rootView, id);
+      if (tvUserName == null) {
+        break missingId;
+      }
+
+      id = R.id.tvViewAll;
+      TextView tvViewAll = ViewBindings.findChildViewById(rootView, id);
+      if (tvViewAll == null) {
+        break missingId;
+      }
+
+      return new ActivityMainBinding((CoordinatorLayout) rootView, btnSettings, chipDriveConnected,
+          cvImport, cvProfileImage, cvScan, cvToolCompress, cvToolMerge, cvToolSecurity,
+          cvUserProfile, fabScan, ivLockCompress, ivLockMerge, ivLockSecurity, ivProfileImage,
+          rvDocuments, toolbar, tvAppTitle, tvEmptyState, tvProfileInitials, tvUserEmail,
+          tvUserName, tvViewAll);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

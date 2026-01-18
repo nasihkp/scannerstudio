@@ -17,4 +17,7 @@ interface DocumentDao {
 
     @Delete
     suspend fun delete(document: DocumentEntity)
+
+    @Query("SELECT * FROM documents ORDER BY createdAt DESC")
+    suspend fun getDocumentsList(): List<DocumentEntity>
 }

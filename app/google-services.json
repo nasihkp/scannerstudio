@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "928251082718",
+    "project_id": "smartscan-8d54c",
+    "storage_bucket": "smartscan-8d54c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:928251082718:android:ef85841e9a93b948aacf4f",
+        "android_client_info": {
+          "package_name": "com.example.scanner"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "928251082718-4i4d8dbvn3tehknevqpuoopsuhi5h80h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.scanner",
+            "certificate_hash": "a543baa48a24bddc67d3e68d2daa6883d4a99612"
+          }
+        },
+        {
+          "client_id": "928251082718-ollmn44dgloqtq2h25nq7btlhrg0hb63.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAWCJFWLYEart7TWJmB2VoHgJcXj28777k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "928251082718-ollmn44dgloqtq2h25nq7btlhrg0hb63.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

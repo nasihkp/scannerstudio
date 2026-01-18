@@ -6,10 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
-import android.widget.SeekBar;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,8 +17,6 @@ import androidx.viewbinding.ViewBinding;
 import androidx.viewbinding.ViewBindings;
 import com.example.scanner.R;
 import com.example.scanner.ui.scan.CropView;
-import com.google.android.material.chip.Chip;
-import com.google.android.material.chip.ChipGroup;
 import java.lang.NullPointerException;
 import java.lang.Override;
 import java.lang.String;
@@ -29,103 +26,90 @@ public final class ActivityCropBinding implements ViewBinding {
   private final ConstraintLayout rootView;
 
   @NonNull
-  public final Button btnApplyCrop;
+  public final LinearLayout bottomTabs;
 
   @NonNull
-  public final Button btnCreatePdf;
+  public final ImageButton btnApplyCrop;
 
   @NonNull
-  public final Button btnNext;
+  public final Button btnAutoCrop;
 
   @NonNull
-  public final Button btnPrevious;
+  public final ImageButton btnBack;
 
   @NonNull
-  public final Button btnReset;
+  public final ImageButton btnNextImage;
 
   @NonNull
-  public final Button btnRotateLeft;
+  public final ImageButton btnPrevImage;
 
   @NonNull
-  public final Button btnRotateRight;
+  public final Button btnResetCrop;
 
   @NonNull
-  public final Button btnSkipCrop;
+  public final ImageButton btnRotateLeft;
 
   @NonNull
-  public final Chip chipBW;
+  public final ImageButton btnRotateRight;
 
   @NonNull
-  public final Chip chipGrayscale;
-
-  @NonNull
-  public final ChipGroup chipGroupFilters;
-
-  @NonNull
-  public final Chip chipOriginal;
-
-  @NonNull
-  public final Chip chipSepia;
-
-  @NonNull
-  public final ScrollView controlsContainer;
-
-  @NonNull
-  public final LinearLayout cropControls;
+  public final Button btnSave;
 
   @NonNull
   public final CropView cropView;
 
   @NonNull
-  public final LinearLayout editControls;
-
-  @NonNull
-  public final FrameLayout imageContainer;
+  public final ConstraintLayout header;
 
   @NonNull
   public final ImageView ivPreview;
 
   @NonNull
-  public final SeekBar seekBrightness;
+  public final LinearLayout layoutCropTools;
 
   @NonNull
-  public final SeekBar seekContrast;
+  public final LinearLayout layoutRotateTools;
+
+  @NonNull
+  public final LinearLayout tabCrop;
+
+  @NonNull
+  public final LinearLayout tabRotate;
+
+  @NonNull
+  public final FrameLayout toolsContainer;
 
   @NonNull
   public final TextView tvImageCounter;
 
-  private ActivityCropBinding(@NonNull ConstraintLayout rootView, @NonNull Button btnApplyCrop,
-      @NonNull Button btnCreatePdf, @NonNull Button btnNext, @NonNull Button btnPrevious,
-      @NonNull Button btnReset, @NonNull Button btnRotateLeft, @NonNull Button btnRotateRight,
-      @NonNull Button btnSkipCrop, @NonNull Chip chipBW, @NonNull Chip chipGrayscale,
-      @NonNull ChipGroup chipGroupFilters, @NonNull Chip chipOriginal, @NonNull Chip chipSepia,
-      @NonNull ScrollView controlsContainer, @NonNull LinearLayout cropControls,
-      @NonNull CropView cropView, @NonNull LinearLayout editControls,
-      @NonNull FrameLayout imageContainer, @NonNull ImageView ivPreview,
-      @NonNull SeekBar seekBrightness, @NonNull SeekBar seekContrast,
-      @NonNull TextView tvImageCounter) {
+  private ActivityCropBinding(@NonNull ConstraintLayout rootView, @NonNull LinearLayout bottomTabs,
+      @NonNull ImageButton btnApplyCrop, @NonNull Button btnAutoCrop, @NonNull ImageButton btnBack,
+      @NonNull ImageButton btnNextImage, @NonNull ImageButton btnPrevImage,
+      @NonNull Button btnResetCrop, @NonNull ImageButton btnRotateLeft,
+      @NonNull ImageButton btnRotateRight, @NonNull Button btnSave, @NonNull CropView cropView,
+      @NonNull ConstraintLayout header, @NonNull ImageView ivPreview,
+      @NonNull LinearLayout layoutCropTools, @NonNull LinearLayout layoutRotateTools,
+      @NonNull LinearLayout tabCrop, @NonNull LinearLayout tabRotate,
+      @NonNull FrameLayout toolsContainer, @NonNull TextView tvImageCounter) {
     this.rootView = rootView;
+    this.bottomTabs = bottomTabs;
     this.btnApplyCrop = btnApplyCrop;
-    this.btnCreatePdf = btnCreatePdf;
-    this.btnNext = btnNext;
-    this.btnPrevious = btnPrevious;
-    this.btnReset = btnReset;
+    this.btnAutoCrop = btnAutoCrop;
+    this.btnBack = btnBack;
+    this.btnNextImage = btnNextImage;
+    this.btnPrevImage = btnPrevImage;
+    this.btnResetCrop = btnResetCrop;
     this.btnRotateLeft = btnRotateLeft;
     this.btnRotateRight = btnRotateRight;
-    this.btnSkipCrop = btnSkipCrop;
-    this.chipBW = chipBW;
-    this.chipGrayscale = chipGrayscale;
-    this.chipGroupFilters = chipGroupFilters;
-    this.chipOriginal = chipOriginal;
-    this.chipSepia = chipSepia;
-    this.controlsContainer = controlsContainer;
-    this.cropControls = cropControls;
+    this.btnSave = btnSave;
     this.cropView = cropView;
-    this.editControls = editControls;
-    this.imageContainer = imageContainer;
+    this.header = header;
     this.ivPreview = ivPreview;
-    this.seekBrightness = seekBrightness;
-    this.seekContrast = seekContrast;
+    this.layoutCropTools = layoutCropTools;
+    this.layoutRotateTools = layoutRotateTools;
+    this.tabCrop = tabCrop;
+    this.tabRotate = tabRotate;
+    this.toolsContainer = toolsContainer;
     this.tvImageCounter = tvImageCounter;
   }
 
@@ -156,93 +140,63 @@ public final class ActivityCropBinding implements ViewBinding {
     // This is done to optimize the compiled bytecode for size and performance.
     int id;
     missingId: {
+      id = R.id.bottomTabs;
+      LinearLayout bottomTabs = ViewBindings.findChildViewById(rootView, id);
+      if (bottomTabs == null) {
+        break missingId;
+      }
+
       id = R.id.btnApplyCrop;
-      Button btnApplyCrop = ViewBindings.findChildViewById(rootView, id);
+      ImageButton btnApplyCrop = ViewBindings.findChildViewById(rootView, id);
       if (btnApplyCrop == null) {
         break missingId;
       }
 
-      id = R.id.btnCreatePdf;
-      Button btnCreatePdf = ViewBindings.findChildViewById(rootView, id);
-      if (btnCreatePdf == null) {
+      id = R.id.btnAutoCrop;
+      Button btnAutoCrop = ViewBindings.findChildViewById(rootView, id);
+      if (btnAutoCrop == null) {
         break missingId;
       }
 
-      id = R.id.btnNext;
-      Button btnNext = ViewBindings.findChildViewById(rootView, id);
-      if (btnNext == null) {
+      id = R.id.btnBack;
+      ImageButton btnBack = ViewBindings.findChildViewById(rootView, id);
+      if (btnBack == null) {
         break missingId;
       }
 
-      id = R.id.btnPrevious;
-      Button btnPrevious = ViewBindings.findChildViewById(rootView, id);
-      if (btnPrevious == null) {
+      id = R.id.btnNextImage;
+      ImageButton btnNextImage = ViewBindings.findChildViewById(rootView, id);
+      if (btnNextImage == null) {
         break missingId;
       }
 
-      id = R.id.btnReset;
-      Button btnReset = ViewBindings.findChildViewById(rootView, id);
-      if (btnReset == null) {
+      id = R.id.btnPrevImage;
+      ImageButton btnPrevImage = ViewBindings.findChildViewById(rootView, id);
+      if (btnPrevImage == null) {
+        break missingId;
+      }
+
+      id = R.id.btnResetCrop;
+      Button btnResetCrop = ViewBindings.findChildViewById(rootView, id);
+      if (btnResetCrop == null) {
         break missingId;
       }
 
       id = R.id.btnRotateLeft;
-      Button btnRotateLeft = ViewBindings.findChildViewById(rootView, id);
+      ImageButton btnRotateLeft = ViewBindings.findChildViewById(rootView, id);
       if (btnRotateLeft == null) {
         break missingId;
       }
 
       id = R.id.btnRotateRight;
-      Button btnRotateRight = ViewBindings.findChildViewById(rootView, id);
+      ImageButton btnRotateRight = ViewBindings.findChildViewById(rootView, id);
       if (btnRotateRight == null) {
         break missingId;
       }
 
-      id = R.id.btnSkipCrop;
-      Button btnSkipCrop = ViewBindings.findChildViewById(rootView, id);
-      if (btnSkipCrop == null) {
-        break missingId;
-      }
-
-      id = R.id.chipBW;
-      Chip chipBW = ViewBindings.findChildViewById(rootView, id);
-      if (chipBW == null) {
-        break missingId;
-      }
-
-      id = R.id.chipGrayscale;
-      Chip chipGrayscale = ViewBindings.findChildViewById(rootView, id);
-      if (chipGrayscale == null) {
-        break missingId;
-      }
-
-      id = R.id.chipGroupFilters;
-      ChipGroup chipGroupFilters = ViewBindings.findChildViewById(rootView, id);
-      if (chipGroupFilters == null) {
-        break missingId;
-      }
-
-      id = R.id.chipOriginal;
-      Chip chipOriginal = ViewBindings.findChildViewById(rootView, id);
-      if (chipOriginal == null) {
-        break missingId;
-      }
-
-      id = R.id.chipSepia;
-      Chip chipSepia = ViewBindings.findChildViewById(rootView, id);
-      if (chipSepia == null) {
-        break missingId;
-      }
-
-      id = R.id.controlsContainer;
-      ScrollView controlsContainer = ViewBindings.findChildViewById(rootView, id);
-      if (controlsContainer == null) {
-        break missingId;
-      }
-
-      id = R.id.cropControls;
-      LinearLayout cropControls = ViewBindings.findChildViewById(rootView, id);
-      if (cropControls == null) {
+      id = R.id.btnSave;
+      Button btnSave = ViewBindings.findChildViewById(rootView, id);
+      if (btnSave == null) {
         break missingId;
       }
 
@@ -252,15 +206,9 @@ public final class ActivityCropBinding implements ViewBinding {
         break missingId;
       }
 
-      id = R.id.editControls;
-      LinearLayout editControls = ViewBindings.findChildViewById(rootView, id);
-      if (editControls == null) {
-        break missingId;
-      }
-
-      id = R.id.imageContainer;
-      FrameLayout imageContainer = ViewBindings.findChildViewById(rootView, id);
-      if (imageContainer == null) {
+      id = R.id.header;
+      ConstraintLayout header = ViewBindings.findChildViewById(rootView, id);
+      if (header == null) {
         break missingId;
       }
 
@@ -270,15 +218,33 @@ public final class ActivityCropBinding implements ViewBinding {
         break missingId;
       }
 
-      id = R.id.seekBrightness;
-      SeekBar seekBrightness = ViewBindings.findChildViewById(rootView, id);
-      if (seekBrightness == null) {
+      id = R.id.layoutCropTools;
+      LinearLayout layoutCropTools = ViewBindings.findChildViewById(rootView, id);
+      if (layoutCropTools == null) {
         break missingId;
       }
 
-      id = R.id.seekContrast;
-      SeekBar seekContrast = ViewBindings.findChildViewById(rootView, id);
-      if (seekContrast == null) {
+      id = R.id.layoutRotateTools;
+      LinearLayout layoutRotateTools = ViewBindings.findChildViewById(rootView, id);
+      if (layoutRotateTools == null) {
+        break missingId;
+      }
+
+      id = R.id.tabCrop;
+      LinearLayout tabCrop = ViewBindings.findChildViewById(rootView, id);
+      if (tabCrop == null) {
+        break missingId;
+      }
+
+      id = R.id.tabRotate;
+      LinearLayout tabRotate = ViewBindings.findChildViewById(rootView, id);
+      if (tabRotate == null) {
+        break missingId;
+      }
+
+      id = R.id.toolsContainer;
+      FrameLayout toolsContainer = ViewBindings.findChildViewById(rootView, id);
+      if (toolsContainer == null) {
         break missingId;
       }
 
@@ -288,11 +254,10 @@ public final class ActivityCropBinding implements ViewBinding {
         break missingId;
       }
 
-      return new ActivityCropBinding((ConstraintLayout) rootView, btnApplyCrop, btnCreatePdf,
-          btnNext, btnPrevious, btnReset, btnRotateLeft, btnRotateRight, btnSkipCrop, chipBW,
-          chipGrayscale, chipGroupFilters, chipOriginal, chipSepia, controlsContainer, cropControls,
-          cropView, editControls, imageContainer, ivPreview, seekBrightness, seekContrast,
-          tvImageCounter);
+      return new ActivityCropBinding((ConstraintLayout) rootView, bottomTabs, btnApplyCrop,
+          btnAutoCrop, btnBack, btnNextImage, btnPrevImage, btnResetCrop, btnRotateLeft,
+          btnRotateRight, btnSave, cropView, header, ivPreview, layoutCropTools, layoutRotateTools,
+          tabCrop, tabRotate, toolsContainer, tvImageCounter);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

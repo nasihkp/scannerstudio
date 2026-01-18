@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
+    id 'com.google.gms.google-services'
 }
 
 android {
@@ -33,6 +34,11 @@ android {
     }
     buildFeatures {
         viewBinding true
+    }
+    packagingOptions {
+        resources {
+            excludes += ['META-INF/DEPENDENCIES', 'META-INF/LICENSE', 'META-INF/LICENSE.txt', 'META-INF/license.txt', 'META-INF/NOTICE', 'META-INF/NOTICE.txt', 'META-INF/notice.txt', 'META-INF/ASL2.0', 'META-INF/*.kotlin_module']
+        }
     }
 }
 
@@ -73,4 +79,14 @@ dependencies {
     // We will use native PdfDocument for creation and PdfRenderer for viewing.
     // If we need complex editing, we might need 'com.tom_roush:pdfbox-android:2.0.27.0'
     // implementation 'com.tom_roush:pdfbox-android:2.0.27.0'
+
+    // Cloud Integration (Google Drive & Firebase)
+    implementation platform('com.google.firebase:firebase-bom:32.7.0')
+    implementation 'com.google.firebase:firebase-auth-ktx'
+    implementation 'com.google.android.gms:play-services-auth:20.7.0'
+    implementation 'com.google.api-client:google-api-client-android:2.2.0'
+    implementation 'com.google.apis:google-api-services-drive:v3-rev20230822-2.0.0'
+    implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
+    implementation 'com.google.http-client:google-http-client-gson:1.43.3'
+    implementation 'com.google.http-client:google-http-client-android:1.43.3'
 }

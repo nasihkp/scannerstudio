@@ -9,22 +9,24 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import com.bumptech.glide.Glide
 import com.example.scanner.databinding.ActivityMainBinding
 import com.example.scanner.ui.scan.ScanActivity
 import com.example.scanner.data.model.DocumentEntity
+import com.example.scanner.utils.GoogleDriveManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileInputStream
-import java.io.OutputStream
 
 class MainActivity : AppCompatActivity() {
 
@@ -36,6 +38,16 @@ class MainActivity : AppCompatActivity() {
         private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
     }
 
+    private val importLauncher = registerForActivityResult(
+        androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == android.app.Activity.RESULT_OK) {
+            result.data?.data?.let { uri ->
+                handleImport(uri)
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -43,35 +55,156 @@ class MainActivity : AppCompatActivity() {
 
         setupUI()
     }
+    
+    // ... [onResume / updateUI / enableTool same as before] ...
 
     private fun setupUI() {
-        binding.fabScan.setOnClickListener {
-            if (allPermissionsGranted()) {
-                startScan()
-            } else {
-                ActivityCompat.requestPermissions(
-                    this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS
-                )
-            }
+        // Main Scan Buttons
+        binding.cvScan.setOnClickListener { checkPermissionsAndScan() }
+        binding.fabScan.setOnClickListener { checkPermissionsAndScan() }
+
+        // Import (Direct Open)
+        binding.cvImport.setOnClickListener {
+             val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+                 addCategory(Intent.CATEGORY_OPENABLE)
+                 type = "*/*" 
+                 putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/*", "application/pdf"))
+             }
+             importLauncher.launch(intent)
+        }
+
+        // Settings
+        binding.btnSettings.setOnClickListener {
+             val intent = Intent(this, com.example.scanner.ui.settings.SettingsActivity::class.java)
+             startActivity(intent)
         }
         
+        // Advanced Tools
+        binding.cvToolMerge.setOnClickListener { 
+            if (binding.cvToolMerge.isEnabled) {
+                val intent = Intent(this, com.example.scanner.ui.tools.MergeActivity::class.java)
+                startActivity(intent)
+            } else {
+                 Toast.makeText(this, "Please sign in to use this feature", Toast.LENGTH_SHORT).show()
+            }
+        }
+        binding.cvToolCompress.setOnClickListener { 
+            if (binding.cvToolCompress.isEnabled) {
+                val intent = Intent(this, com.example.scanner.ui.tools.CompressActivity::class.java)
+                startActivity(intent)
+            } else {
+                 Toast.makeText(this, "Please sign in to use this feature", Toast.LENGTH_SHORT).show()
+            }
+        }
+        binding.cvToolSecurity.setOnClickListener { 
+             Toast.makeText(this, "Security Tools coming soon", Toast.LENGTH_SHORT).show() 
+        }
+
+        // Documents List
         val adapter = com.example.scanner.ui.documents.DocumentAdapter(
             onDocumentClick = { document ->
-                val intent = Intent(this, com.example.scanner.ui.editor.EditorActivity::class.java)
-                intent.putExtra("DOCUMENT_PATH", document.filePath)
+                // USE PDF PREVIEW ACTIVITY instead of EditorActivity
+                val intent = Intent(this, com.example.scanner.ui.documents.PdfPreviewActivity::class.java)
+                intent.putExtra("PDF_PATH", document.filePath)
                 startActivity(intent)
             },
             onShareClick = { document -> shareDocument(document) },
             onSaveClick = { document -> saveToDownloads(document) },
             onDeleteClick = { document -> deleteDocument(document) }
         )
-        binding.rvDocuments.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
         binding.rvDocuments.adapter = adapter
+        binding.rvDocuments.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
 
         viewModel = androidx.lifecycle.ViewModelProvider(this)[MainViewModel::class.java]
         viewModel.allDocuments.observe(this) { documents ->
             adapter.setDocuments(documents)
-            binding.tvEmptyState.visibility = if (documents.isEmpty()) android.view.View.VISIBLE else android.view.View.GONE
+            binding.tvEmptyState.visibility = if (documents.isEmpty()) View.VISIBLE else View.GONE
+        }
+    }
+
+    private fun handleImport(uri: Uri) {
+        val mimeType = contentResolver.getType(uri) ?: ""
+        
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                // Copy to cache/files first
+                val fileName = getFileName(uri) ?: "imported_${System.currentTimeMillis()}"
+                val safeFileName = if (fileName.endsWith(".pdf", true) || fileName.endsWith(".jpg", true) || fileName.endsWith(".png", true)) fileName else "$fileName.imported"
+                
+                val destFile = File(externalCacheDir, safeFileName)
+                val inputStream = contentResolver.openInputStream(uri)
+                val outputStream = java.io.FileOutputStream(destFile)
+                inputStream?.copyTo(outputStream)
+                inputStream?.close()
+                outputStream.close()
+                
+                withContext(Dispatchers.Main) {
+                    if (mimeType.startsWith("image/") || safeFileName.endsWith(".jpg", true) || safeFileName.endsWith(".png", true)) {
+                        // Launch Crop Activity
+                        val intent = Intent(this@MainActivity, com.example.scanner.ui.scan.CropActivity::class.java)
+                        val list = ArrayList<String>()
+                        list.add(destFile.absolutePath)
+                        intent.putStringArrayListExtra("IMAGE_PATHS", list)
+                        startActivity(intent)
+                     } else if (mimeType == "application/pdf" || safeFileName.endsWith(".pdf", true)) {
+                         // Insert into DB first
+                         val db = com.example.scanner.data.local.AppDatabase.getDatabase(applicationContext)
+                         val doc = DocumentEntity(
+                             name = destFile.name,
+                             filePath = destFile.absolutePath,
+                             createdAt = System.currentTimeMillis()
+                         )
+                         db.documentDao().insert(doc)
+                         
+                         // Launch PDF Preview
+                         val intent = Intent(this@MainActivity, com.example.scanner.ui.documents.PdfPreviewActivity::class.java)
+                         intent.putExtra("PDF_PATH", destFile.absolutePath)
+                         startActivity(intent)
+                    } else {
+                        Toast.makeText(this@MainActivity, "Unsupported file type", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                withContext(Dispatchers.Main) {
+                   Toast.makeText(this@MainActivity, "Import failed: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+    
+    private fun getFileName(uri: Uri): String? {
+        var result: String? = null
+        if (uri.scheme == "content") {
+            val cursor = contentResolver.query(uri, null, null, null, null)
+            try {
+                if (cursor != null && cursor.moveToFirst()) {
+                    val index = cursor.getColumnIndex(android.provider.OpenableColumns.DISPLAY_NAME)
+                    if (index >= 0) {
+                        result = cursor.getString(index)
+                    }
+                }
+            } finally {
+                cursor?.close()
+            }
+        }
+        if (result == null) {
+            result = uri.path
+            val cut = result?.lastIndexOf('/')
+            if (cut != null && cut != -1) {
+                result = result?.substring(cut + 1)
+            }
+        }
+        return result
+    }
+
+    private fun checkPermissionsAndScan() {
+        if (allPermissionsGranted()) {
+            startScan()
+        } else {
+            ActivityCompat.requestPermissions(
+                this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS
+            )
         }
     }
 
@@ -113,7 +246,6 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    // Use MediaStore for Android 10+
                     val values = ContentValues().apply {
                         put(MediaStore.MediaColumns.DISPLAY_NAME, document.name)
                         put(MediaStore.MediaColumns.MIME_TYPE, "application/pdf")
@@ -132,7 +264,6 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                 } else {
-                    // For older Android versions
                     val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
                     val destFile = File(downloadsDir, document.name)
                     sourceFile.copyTo(destFile, overwrite = true)
@@ -156,11 +287,9 @@ class MainActivity : AppCompatActivity() {
             .setPositiveButton("Delete") { _, _ ->
                 CoroutineScope(Dispatchers.IO).launch {
                     try {
-                        // Delete from database
                         val db = com.example.scanner.data.local.AppDatabase.getDatabase(applicationContext)
                         db.documentDao().delete(document)
                         
-                        // Delete file
                         val file = File(document.filePath)
                         if (file.exists()) {
                             file.delete()

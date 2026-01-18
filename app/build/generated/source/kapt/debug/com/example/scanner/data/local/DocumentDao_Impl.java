@@ -1,6 +1,7 @@
 package com.example.scanner.data.local;
 
 import android.database.Cursor;
+import android.os.CancellationSignal;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
@@ -172,6 +173,59 @@ public final class DocumentDao_Impl implements DocumentDao {
         _statement.release();
       }
     });
+  }
+
+  @Override
+  public Object getDocumentsList(final Continuation<? super List<DocumentEntity>> $completion) {
+    final String _sql = "SELECT * FROM documents ORDER BY createdAt DESC";
+    final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 0);
+    final CancellationSignal _cancellationSignal = DBUtil.createCancellationSignal();
+    return CoroutinesRoom.execute(__db, false, _cancellationSignal, new Callable<List<DocumentEntity>>() {
+      @Override
+      @NonNull
+      public List<DocumentEntity> call() throws Exception {
+        final Cursor _cursor = DBUtil.query(__db, _statement, false, null);
+        try {
+          final int _cursorIndexOfId = CursorUtil.getColumnIndexOrThrow(_cursor, "id");
+          final int _cursorIndexOfName = CursorUtil.getColumnIndexOrThrow(_cursor, "name");
+          final int _cursorIndexOfFilePath = CursorUtil.getColumnIndexOrThrow(_cursor, "filePath");
+          final int _cursorIndexOfCreatedAt = CursorUtil.getColumnIndexOrThrow(_cursor, "createdAt");
+          final int _cursorIndexOfThumbnailPath = CursorUtil.getColumnIndexOrThrow(_cursor, "thumbnailPath");
+          final List<DocumentEntity> _result = new ArrayList<DocumentEntity>(_cursor.getCount());
+          while (_cursor.moveToNext()) {
+            final DocumentEntity _item;
+            final int _tmpId;
+            _tmpId = _cursor.getInt(_cursorIndexOfId);
+            final String _tmpName;
+            if (_cursor.isNull(_cursorIndexOfName)) {
+              _tmpName = null;
+            } else {
+              _tmpName = _cursor.getString(_cursorIndexOfName);
+            }
+            final String _tmpFilePath;
+            if (_cursor.isNull(_cursorIndexOfFilePath)) {
+              _tmpFilePath = null;
+            } else {
+              _tmpFilePath = _cursor.getString(_cursorIndexOfFilePath);
+            }
+            final long _tmpCreatedAt;
+            _tmpCreatedAt = _cursor.getLong(_cursorIndexOfCreatedAt);
+            final String _tmpThumbnailPath;
+            if (_cursor.isNull(_cursorIndexOfThumbnailPath)) {
+              _tmpThumbnailPath = null;
+            } else {
+              _tmpThumbnailPath = _cursor.getString(_cursorIndexOfThumbnailPath);
+            }
+            _item = new DocumentEntity(_tmpId,_tmpName,_tmpFilePath,_tmpCreatedAt,_tmpThumbnailPath);
+            _result.add(_item);
+          }
+          return _result;
+        } finally {
+          _cursor.close();
+          _statement.release();
+        }
+      }
+    }, $completion);
   }
 
   @NonNull

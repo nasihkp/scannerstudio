@@ -7,273 +7,217 @@
     android:background="@android:color/black"
     tools:context=".ui.scan.CropActivity">
 
-    <!-- Image Counter Header -->
-    <TextView
-        android:id="@+id/tvImageCounter"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="#222222"
-        android:gravity="center"
-        android:padding="12dp"
-        android:text="Image 1 of 1"
-        android:textColor="@android:color/white"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <!-- Header -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="#121212"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <!-- Image Preview with Crop Overlay -->
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="48dp"
+            android:layout_height="match_parent"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_arrow_back_black"
+            app:tint="@android:color/white"
+            app:layout_constraintStart_toStartOf="parent"/>
+            
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+            
+            <ImageButton
+                android:id="@+id/btnPrevImage"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_chevron_right"
+                android:rotation="180"
+                app:tint="@android:color/white"
+                android:background="?attr/selectableItemBackgroundBorderless"/>
+
+            <TextView
+                android:id="@+id/tvImageCounter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1 of 1"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:paddingHorizontal="8dp"/>
+                
+            <ImageButton
+                android:id="@+id/btnNextImage"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_chevron_right"
+                app:tint="@android:color/white"
+                android:background="?attr/selectableItemBackgroundBorderless"/>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnSave"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Save"
+            android:textColor="@color/primary_blue"
+            android:background="@android:color/transparent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- Preview Area -->
     <FrameLayout
-        android:id="@+id/imageContainer"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/controlsContainer"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/header"
+        app:layout_constraintBottom_toTopOf="@id/toolsContainer"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvImageCounter">
+        app:layout_constraintEnd_toEndOf="parent">
 
         <ImageView
             android:id="@+id/ivPreview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:adjustViewBounds="true"
-            android:contentDescription="Crop Preview"
             android:scaleType="fitCenter" />
-
+            
         <com.example.scanner.ui.scan.CropView
             android:id="@+id/cropView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="visible" />
+            android:visibility="gone"/>
     </FrameLayout>
 
-    <ScrollView
-        android:id="@+id/controlsContainer"
-        android:layout_width="0dp"
+    <!-- Contextual Tools Container -->
+    <FrameLayout
+        android:id="@+id/toolsContainer"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#222222"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
+        android:background="#1E1E1E"
+        android:minHeight="100dp"
+        app:layout_constraintBottom_toTopOf="@id/bottomTabs">
+        
+        <!-- CROP TOOLS -->
         <LinearLayout
+            android:id="@+id/layoutCropTools"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
-
-            <!-- Crop Controls -->
-            <LinearLayout
-                android:id="@+id/cropControls"
-                android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:padding="16dp"
+            android:visibility="gone">
+             <Button
+                android:id="@+id/btnResetCrop"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:visibility="visible">
-
-                <Button
-                    android:id="@+id/btnSkipCrop"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:layout_weight="1"
-                    android:backgroundTint="@android:color/darker_gray"
-                    android:text="Skip Crop"
-                    android:textColor="@android:color/white" />
-
-                <Button
-                    android:id="@+id/btnApplyCrop"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:backgroundTint="@android:color/holo_purple"
-                    android:text="Apply Crop"
-                    android:textColor="@android:color/white" />
-            </LinearLayout>
-
-            <!-- Editing Controls (initially hidden) -->
-            <LinearLayout
-                android:id="@+id/editControls"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="gone">
-
-                <!-- Rotation Controls -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="Rotation"
-                    android:textColor="@android:color/white"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:gravity="center"
-                    android:orientation="horizontal">
-
-                    <Button
-                        android:id="@+id/btnRotateLeft"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="8dp"
-                        android:backgroundTint="@android:color/holo_blue_dark"
-                        android:text="↺ 90°"
-                        android:textColor="@android:color/white" />
-
-                    <Button
-                        android:id="@+id/btnRotateRight"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:backgroundTint="@android:color/holo_blue_dark"
-                        android:text="↻ 90°"
-                        android:textColor="@android:color/white" />
-                </LinearLayout>
-
-                <!-- Brightness Control -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="Brightness"
-                    android:textColor="@android:color/white"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-
-                <SeekBar
-                    android:id="@+id/seekBrightness"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:max="200"
-                    android:progress="100" />
-
-                <!-- Contrast Control -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="Contrast"
-                    android:textColor="@android:color/white"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-
-                <SeekBar
-                    android:id="@+id/seekContrast"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:max="200"
-                    android:progress="100" />
-
-                <!-- Filter Options -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="Filters"
-                    android:textColor="@android:color/white"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-
-                <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/chipGroupFilters"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    app:singleSelection="true">
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chipOriginal"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checked="true"
-                        android:text="Original"
-                        android:textColor="@android:color/white"
-                        app:chipBackgroundColor="@android:color/holo_blue_dark" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chipGrayscale"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Grayscale"
-                        android:textColor="@android:color/white"
-                        app:chipBackgroundColor="@android:color/holo_blue_dark" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chipBW"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="B&amp;W"
-                        android:textColor="@android:color/white"
-                        app:chipBackgroundColor="@android:color/holo_blue_dark" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chipSepia"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Sepia"
-                        android:textColor="@android:color/white"
-                        app:chipBackgroundColor="@android:color/holo_blue_dark" />
-                </com.google.android.material.chip.ChipGroup>
-
-                <!-- Reset Button -->
-                <Button
-                    android:id="@+id/btnReset"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:backgroundTint="@android:color/holo_orange_dark"
-                    android:text="Reset All Adjustments"
-                    android:textColor="@android:color/white" />
-            </LinearLayout>
-
-            <!-- Navigation Buttons -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/btnPrevious"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:layout_weight="1"
-                    android:backgroundTint="@android:color/holo_blue_dark"
-                    android:text="← Previous"
-                    android:textColor="@android:color/white" />
-
-                <Button
-                    android:id="@+id/btnNext"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:backgroundTint="@android:color/holo_blue_dark"
-                    android:text="Next →"
-                    android:textColor="@android:color/white" />
-            </LinearLayout>
-
-            <!-- Create PDF Button -->
-            <Button
-                android:id="@+id/btnCreatePdf"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:backgroundTint="@android:color/holo_green_dark"
-                android:text="Finish &amp; Create PDF"
+                android:text="Reset"
                 android:textColor="@android:color/white"
-                android:visibility="gone" />
-
+                android:backgroundTint="#333333"
+                android:layout_marginEnd="16dp"/>
+             <Button
+                android:id="@+id/btnAutoCrop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Auto"
+                android:textColor="@android:color/white"
+                android:backgroundTint="#333333"
+                android:layout_marginEnd="16dp"/>
+             <ImageButton
+                android:id="@+id/btnApplyCrop"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_check"
+                app:tint="@android:color/white"
+                android:background="@drawable/bg_shutter_button"
+                android:backgroundTint="@color/primary_blue"/>
         </LinearLayout>
-    </ScrollView>
+        
+        <!-- ROTATE TOOLS -->
+        <LinearLayout
+            android:id="@+id/layoutRotateTools"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:padding="16dp"
+            android:visibility="gone">
+            <ImageButton
+                android:id="@+id/btnRotateLeft"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_rotate_left"
+                app:tint="@android:color/white"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:layout_marginEnd="32dp"/>
+            <ImageButton
+                android:id="@+id/btnRotateRight"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_rotate_right"
+                app:tint="@android:color/white"
+                android:background="?attr/selectableItemBackgroundBorderless"/>
+        </LinearLayout>
+    </FrameLayout>
+
+    <!-- Bottom Navigation Tabs -->
+    <LinearLayout
+        android:id="@+id/bottomTabs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="#121212"
+        android:paddingVertical="8dp"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <LinearLayout
+            android:id="@+id/tabCrop"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="?attr/selectableItemBackground">
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_crop"
+                app:tint="@android:color/white"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Crop"
+                android:textSize="12sp"
+                android:textColor="@android:color/white"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/tabRotate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="?attr/selectableItemBackground">
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_rotate_right"
+                app:tint="@android:color/white"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rotate"
+                android:textSize="12sp"
+                android:textColor="@android:color/white"/>
+        </LinearLayout>
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

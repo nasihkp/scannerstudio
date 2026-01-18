@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.CameraSelector
@@ -14,6 +15,7 @@ import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
+import com.example.scanner.R
 import com.example.scanner.databinding.ActivityScanBinding
 import java.io.File
 import java.text.SimpleDateFormat
@@ -24,11 +26,27 @@ import java.util.concurrent.Executors
 class ScanActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityScanBinding
-    private var imageCapture: ImageCapture? = null
-    private lateinit var cameraExecutor: ExecutorService
-
     private val capturedImages = mutableListOf<String>()
-    private lateinit var btnDone: android.widget.Button
+    private lateinit var cameraExecutor: ExecutorService
+    private var imageCapture: ImageCapture? = null
+    
+    // States
+    private var isFlashOn = false
+    private var isAutoCapture = false
+
+    private val galleryLauncher = registerForActivityResult(
+        androidx.activity.result.contract.ActivityResultContracts.GetContent()
+    ) { uri: android.net.Uri? ->
+        uri?.let {
+            val path = com.example.scanner.utils.GalleryUtils.copyUriToCache(this, it)
+            if (path != null) {
+                capturedImages.add(path)
+                updateUI()
+            } else {
+                Toast.makeText(this, "Failed to import image", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,57 +54,87 @@ class ScanActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         startCamera()
-
-        binding.btnCapture.setOnClickListener { takePhoto() }
+        setupUI()
         
-        // Add Edit Images Button dynamically
-        btnDone = android.widget.Button(this).apply {
-            text = "Edit Images (0)"
-            visibility = android.view.View.GONE
-            setOnClickListener { finishScanning() }
-            // Improve button styling
-            setBackgroundColor(android.graphics.Color.parseColor("#4CAF50"))
-            setTextColor(android.graphics.Color.WHITE)
-            textSize = 16f
-            setPadding(32, 16, 32, 16)
-        }
-        val params = androidx.constraintlayout.widget.ConstraintLayout.LayoutParams(
-            androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.WRAP_CONTENT,
-            androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.WRAP_CONTENT
-        )
-        params.bottomToBottom = androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.PARENT_ID
-        params.endToEnd = androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.PARENT_ID
-        params.setMargins(0, 0, 48, 120)
-        btnDone.layoutParams = params
-        binding.root.addView(btnDone)
-
         cameraExecutor = Executors.newSingleThreadExecutor()
+    }
+
+    private fun setupUI() {
+        // Capture
+        binding.btnCapture.setOnClickListener { 
+            takePhoto()
+            animateCaptureButton()
+        }
+        
+        // Gallery
+        binding.btnGallery.setOnClickListener { openGallery() }
+        
+        // Done
+        binding.cvDone.setOnClickListener { finishScanning() }
+        
+        // Top Bar
+        binding.btnClose.setOnClickListener { finish() }
+        
+        binding.btnFlash.setOnClickListener { toggleFlash() }
+        
+        binding.tvAuto.setOnClickListener {
+            isAutoCapture = !isAutoCapture
+            updateAutoUI()
+        }
+    }
+    
+    private fun animateCaptureButton() {
+        binding.btnCapture.animate().scaleX(0.9f).scaleY(0.9f).setDuration(100).withEndAction {
+            binding.btnCapture.animate().scaleX(1.0f).scaleY(1.0f).setDuration(100).start()
+        }.start()
+    }
+
+    private fun toggleFlash() {
+        isFlashOn = !isFlashOn
+        imageCapture?.flashMode = if (isFlashOn) ImageCapture.FLASH_MODE_ON else ImageCapture.FLASH_MODE_OFF
+        binding.btnFlash.setImageResource(
+            if (isFlashOn) R.drawable.ic_flash_on else R.drawable.ic_flash_off
+        )
+    }
+    
+    private fun updateAutoUI() {
+        binding.tvAuto.alpha = if (isAutoCapture) 1.0f else 0.5f
+        // TODO: Implement Auto Capture Logic (requires ImageAnalysis)
+        if (isAutoCapture) {
+            Toast.makeText(this, "Auto Capture Enabled (Simulated)", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun openGallery() {
+        galleryLauncher.launch("image/*")
+    }
+
+    private fun updateUI() {
+        val count = capturedImages.size
+        binding.tvCount.text = "$count >"
+        binding.cvDone.visibility = if (count > 0) View.VISIBLE else View.GONE
     }
 
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
 
         cameraProviderFuture.addListener({
-            // Used to bind the lifecycle of cameras to the lifecycle owner
             val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
 
-            // Preview
             val preview = Preview.Builder()
                 .build()
                 .also {
                     it.setSurfaceProvider(binding.viewFinder.surfaceProvider)
                 }
 
-            imageCapture = ImageCapture.Builder().build()
+            imageCapture = ImageCapture.Builder()
+                .setFlashMode(if (isFlashOn) ImageCapture.FLASH_MODE_ON else ImageCapture.FLASH_MODE_OFF)
+                .build()
 
-            // Select back camera as a default
             val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
 
             try {
-                // Unbind use cases before rebinding
                 cameraProvider.unbindAll()
-
-                // Bind use cases to camera
                 cameraProvider.bindToLifecycle(
                     this, cameraSelector, preview, imageCapture
                 )
@@ -119,15 +167,9 @@ class ScanActivity : AppCompatActivity() {
                 }
 
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
-                    // Save to MediaStore (Gallery)
                     saveToGallery(photoFile)
-                    
-                    val msg = "Captured page ${capturedImages.size + 1}"
-                    Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
                     capturedImages.add(photoFile.absolutePath)
-                    
-                    btnDone.text = "Edit Images (${capturedImages.size})"
-                    btnDone.visibility = android.view.View.VISIBLE
+                    updateUI()
                 }
             }
         )
@@ -136,7 +178,6 @@ class ScanActivity : AppCompatActivity() {
     private fun saveToGallery(file: File) {
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                // Android 10+ - Use MediaStore
                 val values = ContentValues().apply {
                     put(MediaStore.Images.Media.DISPLAY_NAME, file.name)
                     put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
@@ -152,7 +193,6 @@ class ScanActivity : AppCompatActivity() {
                     }
                 }
             } else {
-                // Android 9 and below - Copy to Pictures directory
                 val picturesDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
                 val scannerDir = File(picturesDir, "Scanner")
                 if (!scannerDir.exists()) {
@@ -173,10 +213,9 @@ class ScanActivity : AppCompatActivity() {
         }
         
         try {
-            val intent = android.content.Intent(this, ImagePreviewActivity::class.java)
+            val intent = android.content.Intent(this, CropActivity::class.java)
             intent.putStringArrayListExtra("IMAGE_PATHS", ArrayList(capturedImages))
             startActivity(intent)
-            Toast.makeText(this, "Review ${capturedImages.size} image(s)...", Toast.LENGTH_SHORT).show()
         } catch (e: Exception) {
             Log.e(TAG, "Failed to start ImagePreviewActivity", e)
             Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_LONG).show()

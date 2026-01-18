@@ -48,28 +48,11 @@ class DocumentAdapter(
             
             binding.root.setOnClickListener { onDocumentClick(document) }
             
-            // Menu button click
-            binding.btnMenu.setOnClickListener { view ->
-                val popup = PopupMenu(view.context, view)
-                popup.menuInflater.inflate(R.menu.document_menu, popup.menu)
-                popup.setOnMenuItemClickListener { menuItem ->
-                    when (menuItem.itemId) {
-                        R.id.action_share -> {
-                            onShareClick(document)
-                            true
-                        }
-                        R.id.action_save_downloads -> {
-                            onSaveClick(document)
-                            true
-                        }
-                        R.id.action_delete -> {
-                            onDeleteClick(document)
-                            true
-                        }
-                        else -> false
-                    }
-                }
-                popup.show()
+            binding.root.setOnClickListener { onDocumentClick(document) }
+            
+            // Delete button click
+            binding.btnDelete.setOnClickListener { 
+                onDeleteClick(document)
             }
             
             // TODO: Load thumbnail using Glide/Coil if available

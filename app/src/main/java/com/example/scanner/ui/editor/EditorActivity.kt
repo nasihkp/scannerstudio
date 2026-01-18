@@ -233,10 +233,11 @@ class EditorActivity : AppCompatActivity() {
             tempFile.copyTo(originalFile, overwrite = true)
             tempFile.delete()
 
-            Toast.makeText(this, "Changes saved successfully!", Toast.LENGTH_LONG).show()
-            
-            // Reload the PDF
-            displayPdfPage(currentPageIndex)
+            // Launch SaveSuccessActivity
+            val intent = android.content.Intent(this, com.example.scanner.ui.save.SaveSuccessActivity::class.java)
+            intent.putExtra("FILE_PATH", documentPath)
+            startActivity(intent)
+            finish()
 
         } catch (e: Exception) {
             e.printStackTrace()
